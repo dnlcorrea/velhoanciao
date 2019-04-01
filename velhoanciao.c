@@ -1,6 +1,9 @@
 #include <ncurses.h>
 #include <string.h> 
 
+WINDOW *w;
+int x,y;
+
 int center(char str[], int col) {
     return (col-strlen(str))/2;
 }
@@ -24,41 +27,53 @@ void splash()
 
 int main()
 {   
-    initscr();
+    w = initscr();
 
     raw();
     noecho();
 
     splash(); // Splash screen
 
-    char* groselha = "Oh, grande mestre ancião, compartilhe sua sabedoria";
+    char groselha[53] = "Oh, grande mestre ancião, compartilhe sua sabedoria";
 
     move(LINES/2,COLS/3);
 
     char str[110], ch;
-    int i;
-    printf("Digite sua pergunta...");
-    i = 0;
-    ch = getchar ();
-
-    // Pegando a resposta
-    while(ch!='\\') {
-	str[i] = ch; i++;
-	ch = getchar();
-	printf("%c", groselha[i]);
-    }
-
-    int foo = getch();
-    while(foo!='\n') {
-	foo = getch();
-	printf("%c", foo);
-    }
-
-    str[i] ='\0';
-
-    mvprintw(LINES - 2, 0, "You Entered: %s", str);
-
+    int i = 0;
+    printw("Digite sua pergunta...");
+    move((LINES/2)+1,COLS/3);
     refresh();
+    // Pegando a resposta
+    while(1) {
+	ch = getch();
+
+	if(ch == '\\') break; 
+
+	if(ch == 127) {
+	    //mvdelch();
+	    continue;
+	}
+
+	printw("%c", groselha[i]);
+	str[i] = ch; i++;
+	refresh();
+    }
+
+    while(1) {
+	ch = getch();
+	if(ch == '\n') break; 
+	printw("%c", ch);
+	refresh();
+    }
+
+    clear();
+
+    attron(A_BOLD);
+    move((LINES/2)+1,COLS/3);
+    printw("Mestre responde: %s", str);
+    attroff(A_BOLD);
+    refresh();
+
     getch();
     
     endwin();

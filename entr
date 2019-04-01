@@ -1,0 +1,1 @@
+echo *.c | entr -c sh -c 'gcc -o velhoanciao velhoanciao.c -lncurses; ./velhoanciao'
