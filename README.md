@@ -27,7 +27,7 @@ Disponibilizar o código-fonte no GitHub para sugestão de melhorias e fomentar 
 	6. Bindar teclas de função (sair, reiniciar, etc.)
 3. Testes
 
-# Equipe
+## Equipe
 Daniel Corrêa
 
 ## Público-alvo
