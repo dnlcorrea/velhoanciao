@@ -85,7 +85,7 @@ int main()
 
     splash(); // Splash screen
 
-    sprintf(groselha, "%s", "Oh, grande mestre ancião, compartilhe sua sabedoria" );
+    sprintf(groselha, "%s", "Oh, grande mestre anciao, compartilhe sua sabedoria" );
 
     move(LINES/2,COLS/3);
 
@@ -96,22 +96,31 @@ int main()
     pegarResposta();
 
     while(1) {
-    	buffer = getch();
-    	if(buffer == '\n') break;
+	buffer = getch();
+	if(buffer == '\n') break;
+
+	/*getxy();*/
 
 	if(buffer == 127) {
-	    mvdelch(1,2);
+	    mvdelch(LINES/2, (COLS/3));
 	    continue;
 	}
 
-    	printw("%c", buffer);
-    	refresh();
+	printw("%c", buffer);
+	refresh();
     }
 
     responder();
 
+    /* // Quit */
+    /* char q; q = getch(); */
+    /* printw("Mais alguma pergunta para o mestre?"); */
+    /* printw("%d", q); */
+    /* refresh(); */
+    /* //if(q == "n") break; */
+
     getch();
-    
+
     endwin();
 
     return 0;
