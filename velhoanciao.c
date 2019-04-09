@@ -1,8 +1,11 @@
 #include <ncurses.h>
 #include <string.h> 
+#include <unistd.h>
 
 WINDOW *w;
 int x,y;
+
+char groselha[100], resposta[100], buffer;
 
 int center(char str[], int col) {
     return (col-strlen(str))/2;
@@ -11,17 +14,63 @@ int center(char str[], int col) {
 void splash()
 {
     int row,col;
-    char spl[]="Velho Anciao...";
-    char press[]="pressione qualquer tecla para fazer uma pergunta...";
+    FILE* f;
+
+    f = fopen("mestre.txt", "r");
+
+    char foo[1000];
     getmaxyx(stdscr, row, col);
 
-    attron(A_BOLD);
-    mvprintw(row/2, center(spl, col), "%s", spl);
-    mvprintw(row/2 + 1, center(press,col), "%s",press);
-    attroff(A_BOLD);
+    for (int i = 0; i<6; i++) {
+	fgets( foo, 150, f);
+	mvprintw( 3+i, center(foo, col), "%s", foo);
+    }
 
-    getch();	
+    fclose(f);
+
+    char press[]="pressione qualquer tecla para fazer uma pergunta...";
+
+    mvprintw(row/2 + 1, center(press,col), "%s",press);
+
+    getch();
     clear();
+    refresh();
+}
+
+void pegarResposta() {
+    int i = 0;
+    while(1) {
+	buffer = getch();
+
+	if(buffer == '\\') break; 
+
+	if(buffer == 127) {
+	    //mvdelch();
+	    continue;
+	}
+
+	printw("%c", groselha[i]);
+	resposta[i] = buffer; i++;
+	refresh();
+    }
+    
+}
+
+void responder() {
+    clear();
+
+    box(w, '|', '-');
+
+    char resp[] = "Mestre responde:";
+    mvprintw( (LINES/2)-1, center(resp, COLS), "%s", resp);
+
+    move((LINES/2), center(resposta, COLS));
+    attron(A_BOLD);
+    for (int i = 0;i < strlen(resposta);i++) {
+	printw( "%c", resposta[i]);
+	usleep(100000); refresh();
+    }
+    attroff(A_BOLD);
     refresh();
 }
 
@@ -34,45 +83,24 @@ int main()
 
     splash(); // Splash screen
 
-    char groselha[53] = "Oh, grande mestre ancião, compartilhe sua sabedoria";
+    sprintf(groselha, "%s", "Oh, grande mestre ancião, compartilhe sua sabedoria" );
 
     move(LINES/2,COLS/3);
 
-    char str[110], ch;
-    int i = 0;
     printw("Digite sua pergunta...");
     move((LINES/2)+1,COLS/3);
     refresh();
-    // Pegando a resposta
-    while(1) {
-	ch = getch();
 
-	if(ch == '\\') break; 
-
-	if(ch == 127) {
-	    //mvdelch();
-	    continue;
-	}
-
-	printw("%c", groselha[i]);
-	str[i] = ch; i++;
-	refresh();
-    }
+    pegarResposta();
 
     while(1) {
-	ch = getch();
-	if(ch == '\n') break; 
-	printw("%c", ch);
-	refresh();
+    	buffer = getch();
+    	if(buffer == '\n') break;
+    	printw("%c", buffer);
+    	refresh();
     }
 
-    clear();
-
-    attron(A_BOLD);
-    move((LINES/2)+1,COLS/3);
-    printw("Mestre responde: %s", str);
-    attroff(A_BOLD);
-    refresh();
+    responder();
 
     getch();
     
