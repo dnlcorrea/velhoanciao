@@ -45,7 +45,7 @@ void pegarResposta() {
 	if(buffer == '\\') break; 
 
 	if(buffer == 127) {
-	    //mvdelch();
+	    i--;
 	    continue;
 	}
 
@@ -58,13 +58,15 @@ void pegarResposta() {
 
 void responder() {
     clear();
-
-    box(w, '|', '-');
+    int linha = LINES/2;
 
     char resp[] = "Mestre responde:";
-    mvprintw( (LINES/2)-1, center(resp, COLS), "%s", resp);
+    mvprintw( linha-1, center(resp, COLS), "%s", resp);
+    box(w, '|', '-');
 
-    move((LINES/2), center(resposta, COLS));
+    refresh();
+
+    move(linha+1, center(resposta, COLS));
     attron(A_BOLD);
     for (int i = 0;i < strlen(resposta);i++) {
 	printw( "%c", resposta[i]);
@@ -96,6 +98,12 @@ int main()
     while(1) {
     	buffer = getch();
     	if(buffer == '\n') break;
+
+	if(buffer == 127) {
+	    mvdelch(1,2);
+	    continue;
+	}
+
     	printw("%c", buffer);
     	refresh();
     }
