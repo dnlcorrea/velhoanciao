@@ -99,8 +99,6 @@ int main()
 	buffer = getch();
 	if(buffer == '\n') break;
 
-	/*getxy();*/
-
 	if(buffer == 127) {
 	    mvdelch(LINES/2, (COLS/3));
 	    continue;
